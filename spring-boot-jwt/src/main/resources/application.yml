@@ -1,2 +1,7 @@
-name : test-yaml
-jwt-key : cmFtZG9ta2V5aXNyYW5kb21yYW1kb21rZXlpc3JhbmRvbXJhbWRvbWtleWlzcmFuZG9t 
+name: test-yaml
+jwt-key: cmFtZG9ta2V5aXNyYW5kb21yYW1kb21rZXlpc3JhbmRvbXJhbWRvbWtleWlzcmFuZG9t
+spring:
+  application:
+    name: User-Management
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect

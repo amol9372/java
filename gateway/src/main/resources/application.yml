@@ -1,0 +1,23 @@
+jwt-key: cmFtZG9ta2V5aXNyYW5kb21yYW1kb21rZXlpc3JhbmRvbXJhbWRvbWtleWlzcmFuZG9t
+
+server:
+  port: 8091
+
+management:
+  endpoint:
+    gateway:
+      enabled: true
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: service1
+          uri: localhost:8081/service1
+          predicates: Path=/service1/**
+        - id: service2
+          uri: localhost:8082/service2
+          predicates: Path=/service2/**

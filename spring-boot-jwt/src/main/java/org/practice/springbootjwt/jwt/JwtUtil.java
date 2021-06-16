@@ -41,14 +41,14 @@ public class JwtUtil {
 	public Jws<Claims> validateToken(String jwt) {
 		return getClaims(jwt);
 	}
-	
-	public Jws<Claims> getClaims(String jwt){
+
+	public Jws<Claims> getClaims(String jwt) {
 		Jws<Claims> claims = null;
 		try {
-			 claims = Jwts.parserBuilder().setSigningKey(getSigingKey()).build().parseClaimsJws(jwt);
+			claims = Jwts.parserBuilder().setSigningKey(getSigingKey()).build().parseClaimsJws(jwt);
 		} catch (SignatureException | ExpiredJwtException | UnsupportedJwtException | MalformedJwtException
 				| IllegalArgumentException e) {
-			
+
 			e.printStackTrace();
 		}
 		return claims;
