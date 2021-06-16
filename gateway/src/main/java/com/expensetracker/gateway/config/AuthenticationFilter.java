@@ -17,30 +17,33 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-@Configuration
+@Component
 @RefreshScope
 public class AuthenticationFilter implements GatewayFilter {
 
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private RouterValidator routerValidator;
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
 
-        // if (routerValidator.isSecured.test(request)) {
-        if (this.isAuthMissing(request))
-            return this.onError(exchange, "Authorization header is missing in request", HttpStatus.UNAUTHORIZED);
+        if (routerValidator.isSecured.test(request)) {
+            if (this.isAuthMissing(request))
+                return this.onError(exchange, "Authorization header is missing in request", HttpStatus.UNAUTHORIZED);
 
-        final String token = this.getAuthHeader(request);
-        var jwsClaims = jwtUtil.validateToken(token);
+            final String token = this.getAuthHeader(request);
+            var jwsClaims = jwtUtil.validateToken(token);
 
-        if (jwsClaims.isEmpty()) {
-            return this.onError(exchange, "Authorization header is invalid", HttpStatus.UNAUTHORIZED);
+            if (jwsClaims.isEmpty()) {
+                return this.onError(exchange, "Authorization header is invalid", HttpStatus.UNAUTHORIZED);
+            }
+
+            this.populateRequestWithHeaders(exchange, jwsClaims.get());
         }
-
-        this.populateRequestWithHeaders(exchange, jwsClaims.get());
-        // }
         return chain.filter(exchange);
     }
 
