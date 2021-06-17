@@ -1,20 +1,17 @@
 package com.expensetracker.gateway.config;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import reactor.core.publisher.Mono;
 
 @Component
