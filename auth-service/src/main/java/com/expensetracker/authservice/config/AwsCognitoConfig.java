@@ -10,8 +10,8 @@ public class AwsCognitoConfig {
 	public static AWSCognitoIdentityProvider getAmazonCognitoIdentityClient() {
 
 		AWSCognitoIdentityProvider awsCognitoIdentityProvider = null;
-		BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIAUU63GJAHFELMJYHV",
-	 "/hgOZEaNNxz7J4ddhqZPjRXJzKYfc7H61jvK+lLA");
+		BasicAWSCredentials awsCreds = new BasicAWSCredentials("",
+	 "");
 		
 		try {
 			awsCognitoIdentityProvider = AWSCognitoIdentityProviderClientBuilder.standard()
