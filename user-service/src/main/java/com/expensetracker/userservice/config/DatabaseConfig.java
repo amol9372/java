@@ -1,4 +1,4 @@
-package com.expensetracker.authservice.config;
+package com.expensetracker.userservice.config;
 
 import javax.sql.DataSource;
 

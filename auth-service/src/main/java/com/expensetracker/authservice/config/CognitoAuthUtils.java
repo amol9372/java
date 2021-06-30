@@ -3,10 +3,12 @@ package com.expensetracker.authservice.config;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.model.AdminInitiateAuthRequest;
+import com.amazonaws.services.cognitoidp.model.AdminInitiateAuthResult;
 import com.amazonaws.services.cognitoidp.model.AttributeType;
 import com.amazonaws.services.cognitoidp.model.AuthFlowType;
 import com.amazonaws.services.cognitoidp.model.ConfirmSignUpRequest;
@@ -14,29 +16,10 @@ import com.amazonaws.services.cognitoidp.model.SignUpRequest;
 import com.expensetracker.authservice.dto.CognitoSignInUser;
 import com.expensetracker.authservice.dto.CognitoSignupUser;
 
-public class CognitoUtils {
+public class CognitoAuthUtils {
 
 	private static final String APP_CLIENT_ID = "78cmeea2ie7om1m4e42u2genus";
 	private static final String USER_POOL_ID = "ap-south-1_7vujruAdZ";
-
-	public static void signUpUser(CognitoSignupUser cognitoSignupUser) {
-		List<AttributeType> attributes = getAttributeMap(cognitoSignupUser);
-		AWSCognitoIdentityProvider awsCognitoIdentityProvider = AwsCognitoConfig.getAmazonCognitoIdentityClient();
-
-		SignUpRequest signUpRequest = new SignUpRequest().withClientId(APP_CLIENT_ID).withUserAttributes(attributes);
-
-		var result = awsCognitoIdentityProvider.signUp(signUpRequest);
-	}
-
-	public static void confirmSignupUser(String userName, String confirmationCode) {
-		AWSCognitoIdentityProvider awsCognitoIdentityProvider = AwsCognitoConfig.getAmazonCognitoIdentityClient();
-
-		ConfirmSignUpRequest confirmSignUpRequest = new ConfirmSignUpRequest().withClientId(APP_CLIENT_ID)
-				.withUsername(userName).withConfirmationCode(confirmationCode);
-
-		var result = awsCognitoIdentityProvider.confirmSignUp(confirmSignUpRequest);
-
-	}
 
 	public static List<AttributeType> getAttributeMap(CognitoSignupUser cognitoSignupUser) {
 		Class<?> cognitoUserClass = cognitoSignupUser.getClass();
@@ -55,7 +38,7 @@ public class CognitoUtils {
 		}).collect(Collectors.toList());
 	}
 
-	public static void authenticateUser(CognitoSignInUser cognitoSignInUser) {
+	public static AdminInitiateAuthResult authenticateUser(CognitoSignInUser cognitoSignInUser) {
 		AWSCognitoIdentityProvider awsCognitoIdentityProvider = AwsCognitoConfig.getAmazonCognitoIdentityClient();
 		Map<String, String> authParameters = Map.of("USERNAME", cognitoSignInUser.getUserName(), "PASSWORD",
 				cognitoSignInUser.getPassword());
@@ -64,11 +47,7 @@ public class CognitoUtils {
 				.withAuthFlow(AuthFlowType.ADMIN_USER_PASSWORD_AUTH).withUserPoolId(USER_POOL_ID)
 				.withAuthParameters(authParameters);
 
-		var result = awsCognitoIdentityProvider.adminInitiateAuth(authRequest);
-		
-		System.out.println(result.getAuthenticationResult());
-		
-		
+		return awsCognitoIdentityProvider.adminInitiateAuth(authRequest);			
 
 	}
 
