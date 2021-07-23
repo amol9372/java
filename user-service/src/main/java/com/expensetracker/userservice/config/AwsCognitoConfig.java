@@ -12,7 +12,7 @@ public class AwsCognitoConfig {
 		AWSCognitoIdentityProvider awsCognitoIdentityProvider = null;
 
 		try {
-			awsCognitoIdentityProvider = AWSCognitoIdentityProviderClientBuilder.standard()
+			awsCognitoIdentityProvider = AWSCognitoIdentityProviderClientBuilder.standard().withRegion("ap-south-1")
 					.withCredentials(new EnvironmentVariableCredentialsProvider()).build();
 		} catch (Exception e) {
 			e.printStackTrace();

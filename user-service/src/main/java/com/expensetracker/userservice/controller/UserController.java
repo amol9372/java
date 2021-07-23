@@ -33,10 +33,7 @@ public class UserController {
 			@RequestBody ConfirmCognitoSignUpRequest confirmSignUpRequest) {
 		var confirmSignupResponse = userService.confirmSignUp(confirmSignUpRequest);
 		return ResponseEntity.status(confirmSignupResponse.getHttpStatus()).body(confirmSignupResponse);
-
 	}
-	
-	public ResponseEn
 
 	@GetMapping("sample")
 	public ResponseEntity<String> sample() {
