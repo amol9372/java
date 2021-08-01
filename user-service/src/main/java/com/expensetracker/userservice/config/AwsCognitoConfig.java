@@ -1,7 +1,6 @@
 package com.expensetracker.userservice.config;
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClientBuilder;
 
