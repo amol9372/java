@@ -28,7 +28,7 @@ public class UserController {
 		return ResponseEntity.status(signUpResponse.getStatus()).body(signUpResponse);
 	}
 
-	@PostMapping("confirmsignup")
+	@PostMapping("confirm-signup")
 	public ResponseEntity<ConfirmSignupResponse> confirmSignUp(
 			@RequestBody ConfirmCognitoSignUpRequest confirmSignUpRequest) {
 		var confirmSignupResponse = userService.confirmSignUp(confirmSignUpRequest);

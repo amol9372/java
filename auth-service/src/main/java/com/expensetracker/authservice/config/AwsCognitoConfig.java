@@ -1,5 +1,6 @@
 package com.expensetracker.authservice.config;
 
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
@@ -11,10 +12,10 @@ public class AwsCognitoConfig {
 	public static AWSCognitoIdentityProvider getAmazonCognitoIdentityClient() {
 
 		AWSCognitoIdentityProvider awsCognitoIdentityProvider = null;
-		
+
 		try {
 			awsCognitoIdentityProvider = AWSCognitoIdentityProviderClientBuilder.standard().withRegion("ap-south-1")
-					.withCredentials(new EnvironmentVariableCredentialsProvider()).build();
+					.withCredentials(new DefaultAWSCredentialsProviderChain()).build();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -22,7 +23,5 @@ public class AwsCognitoConfig {
 		return awsCognitoIdentityProvider;
 
 	}
-
-	
 
 }

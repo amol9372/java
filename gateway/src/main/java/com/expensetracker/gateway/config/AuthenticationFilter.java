@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -16,7 +17,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 @RefreshScope
-public class AuthenticationFilter implements GatewayFilter {
+public class AuthenticationFilter implements GlobalFilter {
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -29,8 +30,9 @@ public class AuthenticationFilter implements GatewayFilter {
         ServerHttpRequest request = exchange.getRequest();
 
         if (routerValidator.isSecured.test(request)) {
-            if (this.isAuthMissing(request))
+            if (this.isAuthMissing(request)) {
                 return this.onError(exchange, "Authorization header is missing in request", HttpStatus.UNAUTHORIZED);
+            }
 
             final String token = this.getAuthHeader(request);
             var jwsClaims = jwtUtil.validateToken(token);
@@ -38,6 +40,8 @@ public class AuthenticationFilter implements GatewayFilter {
             if (jwsClaims.isEmpty()) {
                 return this.onError(exchange, "Authorization header is invalid", HttpStatus.UNAUTHORIZED);
             }
+
+            // get user info from redis
 
             this.populateRequestWithHeaders(exchange, jwsClaims.get());
         }

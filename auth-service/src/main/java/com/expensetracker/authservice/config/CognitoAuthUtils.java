@@ -18,8 +18,8 @@ import com.expensetracker.authservice.dto.CognitoSignupUser;
 
 public class CognitoAuthUtils {
 
-	private static final String APP_CLIENT_ID = "78cmeea2ie7om1m4e42u2genus";
-	private static final String USER_POOL_ID = "ap-south-1_7vujruAdZ";
+	private static final String APP_CLIENT_ID = System.getenv("APP_CLIENT_ID");
+	private static final String USER_POOL_ID = System.getenv("USER_POOL_ID");
 
 	public static List<AttributeType> getAttributeMap(CognitoSignupUser cognitoSignupUser) {
 		Class<?> cognitoUserClass = cognitoSignupUser.getClass();
@@ -47,7 +47,7 @@ public class CognitoAuthUtils {
 				.withAuthFlow(AuthFlowType.ADMIN_USER_PASSWORD_AUTH).withUserPoolId(USER_POOL_ID)
 				.withAuthParameters(authParameters);
 
-		return awsCognitoIdentityProvider.adminInitiateAuth(authRequest);			
+		return awsCognitoIdentityProvider.adminInitiateAuth(authRequest);
 
 	}
 

@@ -1,5 +1,0 @@
-spring:
-  application:
-    name: user-service
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect

@@ -22,10 +22,10 @@ public class AuthController {
 	@PostMapping("login")
 	public ResponseEntity<UserSigninResponse> authenticateUser(@RequestBody UserSigninRequest userSigninRequest) {
 
-		var userSigninResponse = authService.AuthenticateUser(userSigninRequest);
+		var userSigninResponse = authService.authenticateUser(userSigninRequest);
 		return ResponseEntity.status(userSigninResponse.getHttpStatus()).body(userSigninResponse);
 	}
-	
+
 	@GetMapping("sample")
 	public ResponseEntity<String> sample() {
 		return ResponseEntity.status(200).body("Success Response");

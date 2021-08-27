@@ -1,10 +1,8 @@
 server:
-  port: 8080
-name: test-yaml
+  port: 8081
 jwt-key: cmFtZG9ta2V5aXNyYW5kb21yYW1kb21rZXlpc3JhbmRvbXJhbWRvbWtleWlzcmFuZG9t
 spring:
   application:
     name: auth-service
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
-

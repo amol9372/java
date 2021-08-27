@@ -15,9 +15,11 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: service1
-          uri: localhost:8081/service1
-          predicates: Path=/service1/**
-        - id: service2
-          uri: localhost:8082/service2
-          predicates: Path=/service2/**
+        - id: auth
+          uri: "http://localhost:8081"
+          predicates:
+            - Path=/auth/**
+        - id: user
+          uri: "http://localhost:8080"
+          predicates:
+            - Path=/user/**

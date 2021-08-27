@@ -27,7 +27,7 @@ public class AuthService {
 	@Autowired
 	private JwtUtil jwtUtil;
 
-	public UserSigninResponse AuthenticateUser(UserSigninRequest signinRequest) {
+	public UserSigninResponse authenticateUser(UserSigninRequest signinRequest) {
 
 		var userSigninResponse = new UserSigninResponse();
 
@@ -46,14 +46,17 @@ public class AuthService {
 				userSigninResponse.setHttpStatus(HttpStatus.SC_FORBIDDEN);
 			} else {
 
-				// get user detail from DB
-				UserDomain userDomain = new UserDomain.UserBuilder().withEmail("amolsingh9372@gmail.com")
-						.withName("Amol Singh").withUserName("amol9372").build();
+				// get user details from DB
+				UserDomain userDomain = new UserDomain.UserBuilder().withEmail(signinRequest.getEmail())
+						.withName(signinRequest.getUserName()).withUserName(signinRequest.getUserName()).build();
 
-				//var accessToken = jwtUtil.createToken(userDomain);
+				var accessToken = jwtUtil.createToken(userDomain);
 				var appTokens = new AppToken();
-				appTokens.setAccesToken(authResult.getAdminInitiateAuthResult().getAuthenticationResult().getAccessToken());
-				appTokens.setIdentityToken(authResult.getAdminInitiateAuthResult().getAuthenticationResult().getIdToken());
+				// appTokens.setAccesToken(
+				// authResult.getAdminInitiateAuthResult().getAuthenticationResult().getAccessToken());
+				// appTokens.setIdentityToken(
+				// authResult.getAdminInitiateAuthResult().getAuthenticationResult().getIdToken());
+				appTokens.setAccesToken(accessToken);
 				userSigninResponse.setTokens(appTokens);
 				userSigninResponse.setHttpStatus(HttpStatus.SC_OK);
 			}
@@ -64,7 +67,6 @@ public class AuthService {
 		}
 
 		return userSigninResponse;
-
 	}
 
 	private AuthResponse getAuthenticationResult(CognitoSignInUser cognitoSignInUser) {
@@ -77,19 +79,19 @@ public class AuthService {
 
 		} catch (ResourceNotFoundException e) {
 			authResponse.setErrorResponse(e.getMessage());
-			
+
 		} catch (NotAuthorizedException e) {
-			authResponse.setErrorResponse(e.getMessage());			
+			authResponse.setErrorResponse(e.getMessage());
 
 		} catch (UserNotFoundException e) {
-			authResponse.setErrorResponse(e.getMessage());	
+			authResponse.setErrorResponse(e.getMessage());
 
 		} catch (InternalErrorException e) {
 			authResponse.setErrorResponse(e.getMessage());
-			
-		} catch(PasswordResetRequiredException e) {
-			authResponse.setErrorResponse(e.getMessage());			
-		}	
+
+		} catch (PasswordResetRequiredException e) {
+			authResponse.setErrorResponse(e.getMessage());
+		}
 
 		return authResponse;
 	}

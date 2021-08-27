@@ -23,5 +23,4 @@ public class AwsCognitoConfig {
 
 }
 
-
 // AWS_ACCESS_KEY_ID (or AWS_ACCESS_KEY) and AWS_SECRET_KEY

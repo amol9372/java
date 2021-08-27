@@ -19,16 +19,15 @@ import com.expensetracker.userservice.model.ResetPasswordChallengeRequest;
 
 public class CognitoUserUtils {
 
-	private static final String APP_CLIENT_ID = "78cmeea2ie7om1m4e42u2genus";
-	private static final String USER_POOL_ID = "ap-south-1_7vujruAdZ";
+	private static final String APP_CLIENT_ID = System.getenv("APP_CLIENT_ID");
+	private static final String USER_POOL_ID = System.getenv("USER_POOL_ID");
 
 	public static SignUpResult signUpUser(CognitoSignupUser cognitoSignupUser) {
 		List<AttributeType> attributes = getAttributeMap(cognitoSignupUser);
 		AWSCognitoIdentityProvider awsCognitoIdentityProvider = AwsCognitoConfig.getAmazonCognitoIdentityClient();
 
 		SignUpRequest signUpRequest = new SignUpRequest().withClientId(APP_CLIENT_ID)
-				.withUsername(cognitoSignupUser.getUserName())
-				.withPassword(cognitoSignupUser.getPassword())
+				.withUsername(cognitoSignupUser.getUserName()).withPassword(cognitoSignupUser.getPassword())
 				.withUserAttributes(attributes);
 
 		return awsCognitoIdentityProvider.signUp(signUpRequest);
@@ -37,22 +36,22 @@ public class CognitoUserUtils {
 	public static ConfirmSignUpResult confirmSignupUser(String userName, String confirmationCode) {
 		AWSCognitoIdentityProvider awsCognitoIdentityProvider = AwsCognitoConfig.getAmazonCognitoIdentityClient();
 
-		var confirmSignUpRequest = new ConfirmSignUpRequest()
-				.withClientId(APP_CLIENT_ID)
-				.withUsername(userName)
+		var confirmSignUpRequest = new ConfirmSignUpRequest().withClientId(APP_CLIENT_ID).withUsername(userName)
 				.withConfirmationCode(confirmationCode);
 
 		return awsCognitoIdentityProvider.confirmSignUp(confirmSignUpRequest);
 
 	}
 
-	public static AdminRespondToAuthChallengeResult respondToChallenge(ResetPasswordChallengeRequest passwordChallengeRequest) {
+	public static AdminRespondToAuthChallengeResult respondToChallenge(
+			ResetPasswordChallengeRequest passwordChallengeRequest) {
 		AWSCognitoIdentityProvider awsCognitoIdentityProvider = AwsCognitoConfig.getAmazonCognitoIdentityClient();
 		var adminRespondToAuthChallengeRequest = new AdminRespondToAuthChallengeRequest()
 				.withChallengeName(ChallengeNameType.NEW_PASSWORD_REQUIRED).withUserPoolId(USER_POOL_ID)
-				.withChallengeResponses(Map.of("NEW_PASSWORD_REQUIRED", passwordChallengeRequest.getNewPassword(), "USERRNAME", passwordChallengeRequest.getUsername()))
+				.withChallengeResponses(Map.of("NEW_PASSWORD_REQUIRED", passwordChallengeRequest.getNewPassword(),
+						"USERRNAME", passwordChallengeRequest.getUsername()))
 				.withClientId(APP_CLIENT_ID);
-		
+
 		return awsCognitoIdentityProvider.adminRespondToAuthChallenge(adminRespondToAuthChallengeRequest);
 	}
 
@@ -66,8 +65,7 @@ public class CognitoUserUtils {
 
 			Field annotatedField = field.getAnnotation(Field.class);
 
-			AttributeType attributeType = new AttributeType()
-					.withName(annotatedField.name())
+			AttributeType attributeType = new AttributeType().withName(annotatedField.name())
 					.withValue((String) getFieldValue(field, cognitoSignupUser));
 
 			return attributeType;
