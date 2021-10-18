@@ -63,7 +63,6 @@ public class AuthenticationFilter implements GlobalFilter {
     }
 
     private void populateRequestWithHeaders(ServerWebExchange exchange, Jws<Claims> jwsClaims) {
-        // Claims claims = jwtUtil.getAllClaimsFromToken(jwsClaims);
         exchange.getRequest().mutate().header("id", String.valueOf(jwsClaims.getBody().get("id")))
                 .header("role", String.valueOf(jwsClaims.getBody().get("role"))).build();
     }

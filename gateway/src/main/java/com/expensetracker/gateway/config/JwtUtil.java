@@ -24,7 +24,7 @@ public class JwtUtil {
     @Value("${jwt-key}")
     public String key;
 
-    public Key getSigingKey() {
+    public Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(key);
         Key key = Keys.hmacShaKeyFor(keyBytes);
         return key;
@@ -34,7 +34,8 @@ public class JwtUtil {
 
         String jws = Jwts.builder().setIssuer("Stormpath").setSubject("msilverman").claim("name", "Micah Silverman")
                 .claim("scope", "admins").setIssuedAt(Date.from(Instant.ofEpochSecond(1466796822L)))
-                .setExpiration(Date.from(Instant.ofEpochSecond(1622470422L))).signWith(getSigingKey()).compact();
+                .setExpiration(Date.from(Instant.ofEpochSecond(1622470422L))).signWith(
+                getSigningKey()).compact();
 
         return jws;
     }
@@ -46,7 +47,7 @@ public class JwtUtil {
     public Jws<Claims> getClaims(String jwt) {
         Jws<Claims> claims = null;
         try {
-            claims = Jwts.parserBuilder().setSigningKey(getSigingKey()).build().parseClaimsJws(jwt);
+            claims = Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(jwt);
         } catch (SignatureException | ExpiredJwtException | UnsupportedJwtException | MalformedJwtException
                 | IllegalArgumentException e) {
 

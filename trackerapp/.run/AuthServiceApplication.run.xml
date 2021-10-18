@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="AuthServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="auth-service" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.expensetracker.authservice.AuthServiceApplication" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <option name="SHORTEN_COMMAND_LINE" value="NONE" />
+    <envs>
+      <env name="AWS_ACCESS_KEY_ID" value="AKIAUU63GJAHLZ5KIHLO" />
+      <env name="AWS_SECRET_ACCESS_KEY" value="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" />
+      <env name="USER_POOL_ID" value="ap-south-1_7vujruAdZ" />
+      <env name="APP_CLIENT_ID" value="78cmeea2ie7om1m4e42u2genus" />
+    </envs>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

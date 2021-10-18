@@ -1,0 +1,13 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: trackerapp
+  devtools:
+    restart:
+      enabled: false
+
+logging:
+  level.root: DEBUG
+
