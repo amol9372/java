@@ -18,9 +18,9 @@ public class GroupExpenseBuilder {
     var expenseByGroup = expenseItems.stream()
         .collect(Collectors.groupingBy(ExpenseTrackerBean::getPk));
 
-    var expenses = expenseByGroup.entrySet().stream().map(entry -> {
+    var expenses = expenseByGroup.values().stream().map(expenseTrackerBeans -> {
 
-      var partitions = entry.getValue().stream()
+      var partitions = expenseTrackerBeans.stream()
           .collect(Collectors.partitioningBy(e -> e.getSk().contains(ItemType.USER.getValue())));
 
       var expense = ExpenseBuilder.with(partitions.get(Boolean.FALSE).get(0));

@@ -7,6 +7,7 @@ import com.expensetracker.trackerapp.request.CreateExpenseRequest;
 import com.expensetracker.trackerapp.entities.db.ExpenseTrackerBean;
 import com.expensetracker.trackerapp.entities.db.ItemType;
 import com.expensetracker.trackerapp.services.ExpenseService;
+import com.expensetracker.trackerapp.utils.DynamoDBUtil;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,30 +28,22 @@ import software.amazon.awssdk.enhanced.dynamodb.model.WriteBatch.Builder;
 @Service
 public class ExpenseServiceImpl implements ExpenseService {
 
-  @Autowired
-  DynamoDbTable<ExpenseTrackerBean> tableMapper;
+  private final DynamoDbTable<ExpenseTrackerBean> tableMapper;
+  private final DynamoDBUtil dynamoDBUtil;
 
-  @Autowired
-  DynamoDbEnhancedClient dynamoDbEnhancedClient;
-
-  @Autowired
-  DynamoDbTable<ExpenseTrackerBean> groupIndexMapper;
+  public ExpenseServiceImpl(
+      DynamoDbTable<ExpenseTrackerBean> tableMapper,
+      DynamoDBUtil dynamoDBUtil) {
+    this.tableMapper = tableMapper;
+    this.dynamoDBUtil = dynamoDBUtil;
+  }
 
   @Override
   public void createExpense(CreateExpenseRequest request) {
 
-    var expenseBatch = ExpenseBuilder.with(request);
-    Builder<ExpenseTrackerBean> writeBatch = WriteBatch.builder(ExpenseTrackerBean.class);
-
-    expenseBatch.stream().forEach(expense -> {
-      writeBatch.addPutItem(expense);
-    });
-
-    BatchWriteItemEnhancedRequest enhancedRequest = BatchWriteItemEnhancedRequest.builder()
-        .addWriteBatch(writeBatch.mappedTableResource(tableMapper).build()).build();
-
-    BatchWriteResult batchResult = dynamoDbEnhancedClient.batchWriteItem(enhancedRequest);
-    System.out.println(batchResult.toString());
+    var batchItems = ExpenseBuilder.with(request);
+    var batchResult = dynamoDBUtil.batchInsert(batchItems);
+    var unprocessedItems = batchResult.unprocessedPutItemsForTable(tableMapper);
   }
 
   @Override

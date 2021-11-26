@@ -1,6 +1,8 @@
 package com.expensetracker.trackerapp.controller;
 
+import com.expensetracker.trackerapp.entities.app.Group;
 import com.expensetracker.trackerapp.request.CreateGroupRequest;
+import com.expensetracker.trackerapp.services.GroupService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,14 +15,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("group")
 public class GroupController {
 
-  @GetMapping("{groupId}")
-  public void getDetail(@PathVariable String groupId){
+  private final GroupService groupService;
 
+  GroupController(GroupService groupService){
+     this.groupService = groupService;
   }
 
-  @PostMapping
-  public void createGroup(@RequestBody CreateGroupRequest request){
+  @GetMapping("{groupId}")
+  public Group getGroupDetail(@PathVariable String groupId){
+      return groupService.getGroupDetail(groupId);
+  }
 
+  @PostMapping("create")
+  public void createGroup(@RequestBody CreateGroupRequest request){
+      groupService.createGroup(request);
   }
 
   @DeleteMapping("{groupId}")

@@ -9,7 +9,7 @@ public enum ItemType {
     GROUP("group_"),
     CATEGORY("category_");
 
-    private String value;
+    private final String value;
 
     ItemType(String value) {
         this.value = value;

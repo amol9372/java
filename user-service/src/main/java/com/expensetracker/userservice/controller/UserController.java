@@ -1,17 +1,20 @@
 package com.expensetracker.userservice.controller;
 
+import com.expensetracker.userservice.request.UserSigninRequest;
+import com.expensetracker.userservice.response.UserSigninResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.expensetracker.userservice.model.ConfirmCognitoSignUpRequest;
-import com.expensetracker.userservice.model.ConfirmSignupResponse;
-import com.expensetracker.userservice.model.UserSignupRequest;
-import com.expensetracker.userservice.model.UserSignupResponse;
+import com.expensetracker.userservice.request.ConfirmCognitoSignUpRequest;
+import com.expensetracker.userservice.request.ConfirmSignupResponse;
+import com.expensetracker.userservice.request.UserSignupRequest;
+import com.expensetracker.userservice.request.UserSignupResponse;
 import com.expensetracker.userservice.service.UserService;
 
 @RestController
@@ -24,7 +27,7 @@ public class UserController {
 	@PostMapping("register")
 	public ResponseEntity<UserSignupResponse> registerUser(@RequestBody UserSignupRequest signupRequest) {
 
-		var signUpResponse = userService.signupUser(signupRequest);
+		var signUpResponse = userService.createUser(signupRequest);
 		return ResponseEntity.status(signUpResponse.getStatus()).body(signUpResponse);
 	}
 
@@ -35,9 +38,21 @@ public class UserController {
 		return ResponseEntity.status(confirmSignupResponse.getHttpStatus()).body(confirmSignupResponse);
 	}
 
+	@GetMapping("{userId}")
+	public void getUserDetails(@PathVariable String userId){
+
+	}
+
 	@GetMapping("sample")
 	public ResponseEntity<String> sample() {
 		return ResponseEntity.status(200).body("Success Response :: User Service");
+	}
+
+	@PostMapping("login")
+	public ResponseEntity<UserSigninResponse> authenticateUser(@RequestBody UserSigninRequest request) {
+
+		var response = userService.authenticateUser(request);
+		return ResponseEntity.status(response.getHttpStatus()).body(response);
 	}
 
 }

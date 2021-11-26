@@ -1,5 +1,9 @@
 package com.expensetracker.userservice.config;
 
+import com.amazonaws.services.cognitoidp.model.AdminInitiateAuthRequest;
+import com.amazonaws.services.cognitoidp.model.AdminInitiateAuthResult;
+import com.amazonaws.services.cognitoidp.model.AuthFlowType;
+import com.expensetracker.userservice.request.CognitoSignInUserRequest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -14,13 +18,26 @@ import com.amazonaws.services.cognitoidp.model.ConfirmSignUpRequest;
 import com.amazonaws.services.cognitoidp.model.ConfirmSignUpResult;
 import com.amazonaws.services.cognitoidp.model.SignUpRequest;
 import com.amazonaws.services.cognitoidp.model.SignUpResult;
-import com.expensetracker.userservice.model.CognitoSignupUser;
-import com.expensetracker.userservice.model.ResetPasswordChallengeRequest;
+import com.expensetracker.userservice.request.CognitoSignupUser;
+import com.expensetracker.userservice.request.ResetPasswordChallengeRequest;
 
 public class CognitoUserUtils {
 
 	private static final String APP_CLIENT_ID = System.getenv("APP_CLIENT_ID");
 	private static final String USER_POOL_ID = System.getenv("USER_POOL_ID");
+
+	public static AdminInitiateAuthResult authenticateUser(CognitoSignInUserRequest cognitoSignInUser) {
+		AWSCognitoIdentityProvider awsCognitoIdentityProvider = AwsCognitoConfig.getAmazonCognitoIdentityClient();
+		Map<String, String> authParameters = Map.of("USERNAME", cognitoSignInUser.getUserName(), "PASSWORD",
+				cognitoSignInUser.getPassword());
+
+		AdminInitiateAuthRequest authRequest = new AdminInitiateAuthRequest().withClientId(APP_CLIENT_ID)
+				.withAuthFlow(AuthFlowType.ADMIN_USER_PASSWORD_AUTH).withUserPoolId(USER_POOL_ID)
+				.withAuthParameters(authParameters);
+
+		return awsCognitoIdentityProvider.adminInitiateAuth(authRequest);
+
+	}
 
 	public static SignUpResult signUpUser(CognitoSignupUser cognitoSignupUser) {
 		List<AttributeType> attributes = getAttributeMap(cognitoSignupUser);

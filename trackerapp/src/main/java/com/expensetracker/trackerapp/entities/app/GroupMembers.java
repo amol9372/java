@@ -42,4 +42,12 @@ public class GroupMembers {
   public void setJoinedOn(LocalDateTime joinedOn) {
     this.joinedOn = joinedOn;
   }
+
+  public List<Balance> getBalances() {
+    return balances;
+  }
+
+  public void setBalances(List<Balance> balances) {
+    this.balances = balances;
+  }
 }

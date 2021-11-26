@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("expense")
 public class ExpenseController {
 
-  @Autowired
-  ExpenseService expenseService;
+  private final ExpenseService expenseService;
+
+  ExpenseController(ExpenseService expenseService) {
+    this.expenseService = expenseService;
+  }
 
   @PostMapping("create")
   public void createExpense(@RequestBody CreateExpenseRequest request) {

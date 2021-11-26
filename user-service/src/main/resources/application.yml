@@ -1,6 +1,10 @@
+server:
+  port: 8081
+
 jwt-key: cmFtZG9ta2V5aXNyYW5kb21yYW1kb21rZXlpc3JhbmRvbXJhbWRvbWtleWlzcmFuZG9t
 spring:
   application:
-    name: User-Management
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    name: user-service
+
+logging:
+  level.root: DEBUG

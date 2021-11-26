@@ -19,9 +19,7 @@ public class AppConfig {
                 .credentialsProvider(EnvironmentVariableCredentialsProvider.create()).region(Region.AP_SOUTH_1)
                 .build();
 
-        DynamoDbEnhancedClient enhancedClient = DynamoDbEnhancedClient.builder().dynamoDbClient(ddb).build();
-
-        return enhancedClient;
+        return DynamoDbEnhancedClient.builder().dynamoDbClient(ddb).build();
     }
 
     @Bean

@@ -19,52 +19,50 @@ import reactor.core.publisher.Mono;
 @RefreshScope
 public class AuthenticationFilter implements GlobalFilter {
 
-    @Autowired
-    private JwtUtil jwtUtil;
+  @Autowired
+  private JwtUtil jwtUtil;
 
-    @Autowired
-    private RouterValidator routerValidator;
+  @Autowired
+  private RouterValidator routerValidator;
 
-    @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        ServerHttpRequest request = exchange.getRequest();
+  @Override
+  public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    ServerHttpRequest request = exchange.getRequest();
 
-        if (routerValidator.isSecured.test(request)) {
-            if (this.isAuthMissing(request)) {
-                return this.onError(exchange, "Authorization header is missing in request", HttpStatus.UNAUTHORIZED);
-            }
+    if (routerValidator.isSecured.test(request)) {
+      if (this.isAuthMissing(request)) {
+        return this.onError(exchange, Constants.AUTH_HEADER_MISSING);
+      }
 
-            final String token = this.getAuthHeader(request);
-            var jwsClaims = jwtUtil.validateToken(token);
+      final String token = this.getAuthHeader(request);
+      var jwsClaims = jwtUtil.validateToken(token);
 
-            if (jwsClaims.isEmpty()) {
-                return this.onError(exchange, "Authorization header is invalid", HttpStatus.UNAUTHORIZED);
-            }
+      if (jwsClaims.isEmpty()) {
+        return this.onError(exchange, Constants.AUTH_HEADER_INVALID);
+      }
 
-            // get user info from redis
-
-            this.populateRequestWithHeaders(exchange, jwsClaims.get());
-        }
-        return chain.filter(exchange);
+      this.populateRequestWithHeaders(exchange, jwsClaims.get());
     }
+    return chain.filter(exchange);
+  }
 
-    private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
-        ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(httpStatus);
-        return response.setComplete();
-    }
+  private Mono<Void> onError(ServerWebExchange exchange, String err) {
+    ServerHttpResponse response = exchange.getResponse();
+    response.setStatusCode(HttpStatus.UNAUTHORIZED);
+    return response.setComplete();
+  }
 
-    private String getAuthHeader(ServerHttpRequest request) {
-        return request.getHeaders().getOrEmpty("Authorization").get(0);
-    }
+  private String getAuthHeader(ServerHttpRequest request) {
+    return request.getHeaders().getOrEmpty("Authorization").get(0);
+  }
 
-    private boolean isAuthMissing(ServerHttpRequest request) {
-        return !request.getHeaders().containsKey("Authorization");
-    }
+  private boolean isAuthMissing(ServerHttpRequest request) {
+    return !request.getHeaders().containsKey("Authorization");
+  }
 
-    private void populateRequestWithHeaders(ServerWebExchange exchange, Jws<Claims> jwsClaims) {
-        exchange.getRequest().mutate().header("id", String.valueOf(jwsClaims.getBody().get("id")))
-                .header("role", String.valueOf(jwsClaims.getBody().get("role"))).build();
-    }
+  private void populateRequestWithHeaders(ServerWebExchange exchange, Jws<Claims> jwsClaims) {
+    exchange.getRequest().mutate().header("id", String.valueOf(jwsClaims.getBody().get("id")))
+        .header("role", String.valueOf(jwsClaims.getBody().get("role"))).build();
+  }
 
 }

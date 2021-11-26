@@ -9,18 +9,22 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.*;
 public class ExpenseTrackerBean {
 
   /**
-   * User
+   * Primary Key
    */
   private String pk;
   private String sk;
+
+  /**
+   * User
+   */
   private String name;
   private String email;
+  private String currency;
 
   /**
    * Expense
    */
   private String expenseName;
-  private String category;
   private Double cost;
   private String paidBy;
   private Double owes;
@@ -31,14 +35,18 @@ public class ExpenseTrackerBean {
   private String group;
   private String groupName;
   private Integer maxUsers;
-  private String currency;
 
   /**
-   * Date-Time
+   * Date-Time, Created-by
    */
   private LocalDateTime createdDate;
   private LocalDateTime updatedDate;
   private String createdBy;
+
+  /**
+   * Misc
+   */
+  private String category;
 
   public static class ExpenseTrackerBeanBuilder {
 
@@ -51,6 +59,11 @@ public class ExpenseTrackerBean {
 
     public ExpenseTrackerBeanBuilder withSk(String sk) {
       expenseTrackerBean.setSk(sk);
+      return this;
+    }
+
+    public ExpenseTrackerBeanBuilder withEmail(String email) {
+      expenseTrackerBean.setEmail(email);
       return this;
     }
 
@@ -91,6 +104,16 @@ public class ExpenseTrackerBean {
 
     public ExpenseTrackerBeanBuilder withOwes(Double owes) {
       expenseTrackerBean.setOwes(owes);
+      return this;
+    }
+
+    public ExpenseTrackerBeanBuilder withMaxUsers(Integer maxUsers) {
+      expenseTrackerBean.setMaxUsers(maxUsers);
+      return this;
+    }
+
+    public ExpenseTrackerBeanBuilder withCreatedDate(LocalDateTime createdDate) {
+      expenseTrackerBean.setCreatedDate(createdDate);
       return this;
     }
 

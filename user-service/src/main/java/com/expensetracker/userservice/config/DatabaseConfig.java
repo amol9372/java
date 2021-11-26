@@ -1,30 +1,34 @@
 package com.expensetracker.userservice.config;
 
-import javax.sql.DataSource;
-
-import org.springframework.boot.jdbc.DataSourceBuilder;
+import com.expensetracker.userservice.entities.db.ExpenseTrackerBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import redis.clients.jedis.Jedis;
+import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 @Configuration
 public class DatabaseConfig {
 
-    // @Bean
-    // public DataSource getDataSource() {
-    // DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-    // dataSourceBuilder.driverClassName("org.postgresql.Driver");
-    // dataSourceBuilder.url("jdbc:postgresql://postgres-test-db.cqju9q6izhxh.ap-south-1.rds.amazonaws.com/postgres");
-    // dataSourceBuilder.username("postgres");
-    // dataSourceBuilder.password("avizva9372");
-    // return dataSourceBuilder.build();
-    // }
+  @Bean
+  public DynamoDbEnhancedClient dynamoDbEnhancedClient() {
+    DynamoDbClient ddb = DynamoDbClient.builder()
+        .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
+        .region(Region.AP_SOUTH_1)
+        .build();
 
-    @Bean
-    public Jedis jedisClient() {
-        var jedis = new Jedis();
-        return jedis;
-    }
+    return DynamoDbEnhancedClient.builder().dynamoDbClient(ddb)
+        .build();
+  }
+
+  @Bean
+  public DynamoDbTable<ExpenseTrackerBean> tableMapper() {
+    return dynamoDbEnhancedClient().table("expense_tracker",
+        TableSchema.fromBean(ExpenseTrackerBean.class));
+  }
 
 }
