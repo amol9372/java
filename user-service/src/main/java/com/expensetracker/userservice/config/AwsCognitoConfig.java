@@ -3,10 +3,14 @@ package com.expensetracker.userservice.config;
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClientBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
 public class AwsCognitoConfig {
 
-	public static AWSCognitoIdentityProvider getAmazonCognitoIdentityClient() {
+	@Bean(name = "awsCognitoIdentityProvider")
+	public AWSCognitoIdentityProvider getAmazonCognitoIdentityClient() {
 
 		AWSCognitoIdentityProvider awsCognitoIdentityProvider = null;
 

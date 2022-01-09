@@ -40,6 +40,9 @@ public class UserServiceImpl implements UserService {
   private JwtUtil jwtUtil;
 
   @Autowired
+  private CognitoUserUtils cognitoUserUtils;
+
+  @Autowired
   private DynamoDbTable<ExpenseTrackerBean> tableMapper;
 
   public UserSignupResponse createUser(UserSignupRequest signupRequest) {
@@ -48,7 +51,7 @@ public class UserServiceImpl implements UserService {
 
     var cognitoSignupUser = new CognitoSignupUser.CognitoUserBuilder(
         signupRequest.getUsername(),
-        signupRequest.getPassword(), signupRequest.getEmail()).withName(signupRequest.getName())
+        signupRequest.getPassword(), signupRequest.getEmail()).withPhoneNo(signupRequest.getPhoneNo()).withName(signupRequest.getName())
         .withGender(signupRequest.getGender()).build();
 
     var signupResult = signupResponse(cognitoSignupUser);
@@ -100,7 +103,7 @@ public class UserServiceImpl implements UserService {
     var cognitoSignupResponse = new CognitoSignUpResponse();
 
     try {
-      var result = CognitoUserUtils.signUpUser(cognitoSignupUser);
+      var result = cognitoUserUtils.signUpUser(cognitoSignupUser);
       cognitoSignupResponse.setSignUpResult(result);
     } catch (Exception e) {
       cognitoSignupResponse.setErrorMessage(e.getMessage());
@@ -113,7 +116,7 @@ public class UserServiceImpl implements UserService {
       ConfirmCognitoSignUpRequest confirmCognitoSignUpRequest) {
     var result = new ConfirmSignupResponse();
     try {
-      CognitoUserUtils.confirmSignupUser(confirmCognitoSignUpRequest.getUsername(),
+      cognitoUserUtils.confirmSignupUser(confirmCognitoSignUpRequest.getUsername(),
           confirmCognitoSignUpRequest.getConfirmationCode());
       result.setHttpStatus(HttpStatus.SC_OK);
       result.setMessage(Constants.USER_CONFIRMED);
@@ -129,8 +132,8 @@ public class UserServiceImpl implements UserService {
 
     var response = new UserSigninResponse();
 
-    CognitoSignInUserRequest cognitoSignInUser = new CognitoSignInUserBuilder().withUsername(
-            request.getUserName())
+    CognitoSignInUserRequest cognitoSignInUser = new CognitoSignInUserBuilder().withEmail(
+            request.getEmail())
         .withPassword(request.getPassword()).build();
 
     var authResult = getAuthenticationResult(cognitoSignInUser);
@@ -138,16 +141,16 @@ public class UserServiceImpl implements UserService {
 
       var adminInitiateAuthResult = authResult.getAdminInitiateAuthResult();
 
-      /**
-       * check for challenge
+      /*
+        check for challenge
        */
       if (Objects.nonNull(adminInitiateAuthResult.getChallengeName())) {
         response.setErrorMessage(adminInitiateAuthResult.getChallengeName());
         response.setHttpStatus(HttpStatus.SC_FORBIDDEN);
       } else {
 
-        /**
-         * get user details from Dynamo DB
+        /*
+          get user details from Dynamo DB
          */
         UserEntity userDomain = new UserEntity();
 
@@ -166,12 +169,22 @@ public class UserServiceImpl implements UserService {
     return response;
   }
 
+  @Override
+  public UserEntity getUserDetails(String username) {
+    var expenseTracerBean = new ExpenseTrackerBean();
+    expenseTracerBean.setPk(username);
+
+    var items = tableMapper.getItem(expenseTracerBean);
+
+    return null;
+  }
+
   private AuthResponse getAuthenticationResult(CognitoSignInUserRequest cognitoSignInUser) {
 
     var authResponse = new AuthResponse();
 
     try {
-      var adminInitiateAuthResult = CognitoUserUtils.authenticateUser(cognitoSignInUser);
+      var adminInitiateAuthResult = cognitoUserUtils.authenticateUser(cognitoSignInUser);
       authResponse.setAdminInitiateAuthResult(adminInitiateAuthResult);
 
     } catch (ResourceNotFoundException | NotAuthorizedException e) {

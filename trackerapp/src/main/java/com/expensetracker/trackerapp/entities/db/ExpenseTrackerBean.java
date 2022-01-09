@@ -1,9 +1,12 @@
 package com.expensetracker.trackerapp.entities.db;
 
 import java.time.LocalDateTime;
-
 import java.util.StringJoiner;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.*;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
 @DynamoDbBean
 public class ExpenseTrackerBean {
@@ -48,82 +51,6 @@ public class ExpenseTrackerBean {
    */
   private String category;
 
-  public static class ExpenseTrackerBeanBuilder {
-
-    private ExpenseTrackerBean expenseTrackerBean = new ExpenseTrackerBean();
-
-    public ExpenseTrackerBeanBuilder withPk(String pk) {
-      expenseTrackerBean.setPk(pk);
-      return this;
-    }
-
-    public ExpenseTrackerBeanBuilder withSk(String sk) {
-      expenseTrackerBean.setSk(sk);
-      return this;
-    }
-
-    public ExpenseTrackerBeanBuilder withEmail(String email) {
-      expenseTrackerBean.setEmail(email);
-      return this;
-    }
-
-    public ExpenseTrackerBeanBuilder withName(String name) {
-      expenseTrackerBean.setName(name);
-      return this;
-    }
-
-    public ExpenseTrackerBeanBuilder withExpenseName(String expenseName) {
-      expenseTrackerBean.setExpenseName(expenseName);
-      return this;
-    }
-
-    public ExpenseTrackerBeanBuilder withCreatedBy(String createdBy) {
-      expenseTrackerBean.setCreatedBy(createdBy);
-      return this;
-    }
-
-    public ExpenseTrackerBeanBuilder withGroup(String groupName) {
-      expenseTrackerBean.setGroup(groupName);
-      return this;
-    }
-
-    public ExpenseTrackerBeanBuilder withCost(Double cost) {
-      expenseTrackerBean.setCost(cost);
-      return this;
-    }
-
-    public ExpenseTrackerBeanBuilder withCategory(String category) {
-      expenseTrackerBean.setCategory(category);
-      return this;
-    }
-
-    public ExpenseTrackerBeanBuilder withPaidBy(String paidBy) {
-      expenseTrackerBean.setPaidBy(paidBy);
-      return this;
-    }
-
-    public ExpenseTrackerBeanBuilder withOwes(Double owes) {
-      expenseTrackerBean.setOwes(owes);
-      return this;
-    }
-
-    public ExpenseTrackerBeanBuilder withMaxUsers(Integer maxUsers) {
-      expenseTrackerBean.setMaxUsers(maxUsers);
-      return this;
-    }
-
-    public ExpenseTrackerBeanBuilder withCreatedDate(LocalDateTime createdDate) {
-      expenseTrackerBean.setCreatedDate(createdDate);
-      return this;
-    }
-
-    public ExpenseTrackerBean build() {
-      return expenseTrackerBean;
-    }
-
-  }
-
-
   public String getName() {
     return name;
   }
@@ -131,7 +58,6 @@ public class ExpenseTrackerBean {
   public void setName(String name) {
     this.name = name;
   }
-
 
   @DynamoDbPartitionKey
   public String getPk() {
@@ -285,5 +211,80 @@ public class ExpenseTrackerBean {
         .add("updatedDate=" + updatedDate)
         .add("createdBy='" + createdBy + "'")
         .toString();
+  }
+
+  public static class ExpenseTrackerBeanBuilder {
+
+    private ExpenseTrackerBean expenseTrackerBean = new ExpenseTrackerBean();
+
+    public ExpenseTrackerBeanBuilder withPk(String pk) {
+      expenseTrackerBean.setPk(pk);
+      return this;
+    }
+
+    public ExpenseTrackerBeanBuilder withSk(String sk) {
+      expenseTrackerBean.setSk(sk);
+      return this;
+    }
+
+    public ExpenseTrackerBeanBuilder withEmail(String email) {
+      expenseTrackerBean.setEmail(email);
+      return this;
+    }
+
+    public ExpenseTrackerBeanBuilder withName(String name) {
+      expenseTrackerBean.setName(name);
+      return this;
+    }
+
+    public ExpenseTrackerBeanBuilder withExpenseName(String expenseName) {
+      expenseTrackerBean.setExpenseName(expenseName);
+      return this;
+    }
+
+    public ExpenseTrackerBeanBuilder withCreatedBy(String createdBy) {
+      expenseTrackerBean.setCreatedBy(createdBy);
+      return this;
+    }
+
+    public ExpenseTrackerBeanBuilder withGroup(String groupName) {
+      expenseTrackerBean.setGroup(groupName);
+      return this;
+    }
+
+    public ExpenseTrackerBeanBuilder withCost(Double cost) {
+      expenseTrackerBean.setCost(cost);
+      return this;
+    }
+
+    public ExpenseTrackerBeanBuilder withCategory(String category) {
+      expenseTrackerBean.setCategory(category);
+      return this;
+    }
+
+    public ExpenseTrackerBeanBuilder withPaidBy(String paidBy) {
+      expenseTrackerBean.setPaidBy(paidBy);
+      return this;
+    }
+
+    public ExpenseTrackerBeanBuilder withOwes(Double owes) {
+      expenseTrackerBean.setOwes(owes);
+      return this;
+    }
+
+    public ExpenseTrackerBeanBuilder withMaxUsers(Integer maxUsers) {
+      expenseTrackerBean.setMaxUsers(maxUsers);
+      return this;
+    }
+
+    public ExpenseTrackerBeanBuilder withCreatedDate(LocalDateTime createdDate) {
+      expenseTrackerBean.setCreatedDate(createdDate);
+      return this;
+    }
+
+    public ExpenseTrackerBean build() {
+      return expenseTrackerBean;
+    }
+
   }
 }

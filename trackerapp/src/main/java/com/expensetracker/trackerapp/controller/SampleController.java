@@ -11,8 +11,8 @@ public class SampleController {
   private int serverPort;
 
   @GetMapping("health-check")
-  public String healthCheck(){
-     return "Application is Running on -> ".concat(String.valueOf(serverPort));
+  public String healthCheck() {
+    return "Application is Running on -> ".concat(String.valueOf(serverPort));
   }
 
 }

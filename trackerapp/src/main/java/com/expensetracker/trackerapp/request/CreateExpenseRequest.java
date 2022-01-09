@@ -1,7 +1,6 @@
 package com.expensetracker.trackerapp.request;
 
 import com.expensetracker.trackerapp.entities.app.ExpenseStakeholders;
-import java.time.LocalDateTime;
 
 public class CreateExpenseRequest {
 

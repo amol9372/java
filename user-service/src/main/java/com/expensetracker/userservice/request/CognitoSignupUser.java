@@ -22,7 +22,7 @@ public class CognitoSignupUser {
 	@Field(name = "address")
 	private String address;
 
-	@Field(name = "phone number")
+	@Field(name = "phone_number", required = true)
 	private String phoneNo;
 
 	public CognitoSignupUser(String userName, String password, String email) {
@@ -123,6 +123,11 @@ public class CognitoSignupUser {
 		
 		public CognitoUserBuilder withGender(String gender) {
 			cognitoSignupUser.setGender(gender);
+			return this;
+		}
+
+		public CognitoUserBuilder withPhoneNo(String phoneNo) {
+			cognitoSignupUser.setPhoneNo(phoneNo);
 			return this;
 		}
 		

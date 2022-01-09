@@ -13,6 +13,8 @@ import software.amazon.awssdk.enhanced.dynamodb.model.WriteBatch.Builder;
 @Component
 public class DynamoDBUtil {
 
+  public static final Integer PAGE_SIZE = 4;
+
   private final DynamoDbTable<ExpenseTrackerBean> tableMapper;
 
   private final DynamoDbEnhancedClient dynamoDbEnhancedClient;

@@ -1,5 +1,6 @@
 package com.expensetracker.userservice.service;
 
+import com.expensetracker.userservice.entities.model.UserEntity;
 import com.expensetracker.userservice.request.UserSigninRequest;
 import com.expensetracker.userservice.response.UserSigninResponse;
 import org.springframework.stereotype.Service;
@@ -17,5 +18,7 @@ public interface UserService {
 	ConfirmSignupResponse confirmSignUp(ConfirmCognitoSignUpRequest confirmCognitoSignUpRequest);
 
 	UserSigninResponse authenticateUser(UserSigninRequest request);
+
+	UserEntity getUserDetails(String username);
 
 }

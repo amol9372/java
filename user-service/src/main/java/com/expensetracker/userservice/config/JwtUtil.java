@@ -40,8 +40,9 @@ public class JwtUtil {
     cal.add(Calendar.HOUR_OF_DAY, 1);
 
     Map<String, String> claims = Map.ofEntries(
-        entry("email", String.valueOf(userDomain.getEmail())),
-        entry("name", userDomain.getUsername()), entry("username", userDomain.getUsername()));
+        entry("email", String.valueOf(userDomain.getEmail()))
+      //  entry("name", userDomain.getUsername()), entry("username", userDomain.getUsername())
+    );
 
     String jws = Jwts.builder().setIssuer("darkseid").setSubject(userDomain.getEmail())
         .setClaims(claims)

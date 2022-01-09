@@ -38,13 +38,13 @@ public class UserController {
 		return ResponseEntity.status(confirmSignupResponse.getHttpStatus()).body(confirmSignupResponse);
 	}
 
-	@GetMapping("{userId}")
-	public void getUserDetails(@PathVariable String userId){
+	@GetMapping("{username}")
+	public void getUserDetails(@PathVariable String username){
 
 	}
 
 	@GetMapping("sample")
-	public ResponseEntity<String> sample() {
+	public ResponseEntity<String> sample()  {
 		return ResponseEntity.status(200).body("Success Response :: User Service");
 	}
 

@@ -20,15 +20,20 @@ import com.amazonaws.services.cognitoidp.model.SignUpRequest;
 import com.amazonaws.services.cognitoidp.model.SignUpResult;
 import com.expensetracker.userservice.request.CognitoSignupUser;
 import com.expensetracker.userservice.request.ResetPasswordChallengeRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CognitoUserUtils {
+
+	@Autowired
+	private AWSCognitoIdentityProvider awsCognitoIdentityProvider;
 
 	private static final String APP_CLIENT_ID = System.getenv("APP_CLIENT_ID");
 	private static final String USER_POOL_ID = System.getenv("USER_POOL_ID");
 
-	public static AdminInitiateAuthResult authenticateUser(CognitoSignInUserRequest cognitoSignInUser) {
-		AWSCognitoIdentityProvider awsCognitoIdentityProvider = AwsCognitoConfig.getAmazonCognitoIdentityClient();
-		Map<String, String> authParameters = Map.of("USERNAME", cognitoSignInUser.getUserName(), "PASSWORD",
+	public AdminInitiateAuthResult authenticateUser(CognitoSignInUserRequest cognitoSignInUser) {
+		Map<String, String> authParameters = Map.of("USERNAME", cognitoSignInUser.getEmail(), "PASSWORD",
 				cognitoSignInUser.getPassword());
 
 		AdminInitiateAuthRequest authRequest = new AdminInitiateAuthRequest().withClientId(APP_CLIENT_ID)
@@ -39,9 +44,8 @@ public class CognitoUserUtils {
 
 	}
 
-	public static SignUpResult signUpUser(CognitoSignupUser cognitoSignupUser) {
+	public SignUpResult signUpUser(CognitoSignupUser cognitoSignupUser) {
 		List<AttributeType> attributes = getAttributeMap(cognitoSignupUser);
-		AWSCognitoIdentityProvider awsCognitoIdentityProvider = AwsCognitoConfig.getAmazonCognitoIdentityClient();
 
 		SignUpRequest signUpRequest = new SignUpRequest().withClientId(APP_CLIENT_ID)
 				.withUsername(cognitoSignupUser.getUserName()).withPassword(cognitoSignupUser.getPassword())
@@ -50,8 +54,7 @@ public class CognitoUserUtils {
 		return awsCognitoIdentityProvider.signUp(signUpRequest);
 	}
 
-	public static ConfirmSignUpResult confirmSignupUser(String userName, String confirmationCode) {
-		AWSCognitoIdentityProvider awsCognitoIdentityProvider = AwsCognitoConfig.getAmazonCognitoIdentityClient();
+	public ConfirmSignUpResult confirmSignupUser(String userName, String confirmationCode) {
 
 		var confirmSignUpRequest = new ConfirmSignUpRequest().withClientId(APP_CLIENT_ID).withUsername(userName)
 				.withConfirmationCode(confirmationCode);
@@ -60,9 +63,8 @@ public class CognitoUserUtils {
 
 	}
 
-	public static AdminRespondToAuthChallengeResult respondToChallenge(
+	public AdminRespondToAuthChallengeResult respondToChallenge(
 			ResetPasswordChallengeRequest passwordChallengeRequest) {
-		AWSCognitoIdentityProvider awsCognitoIdentityProvider = AwsCognitoConfig.getAmazonCognitoIdentityClient();
 		var adminRespondToAuthChallengeRequest = new AdminRespondToAuthChallengeRequest()
 				.withChallengeName(ChallengeNameType.NEW_PASSWORD_REQUIRED).withUserPoolId(USER_POOL_ID)
 				.withChallengeResponses(Map.of("NEW_PASSWORD_REQUIRED", passwordChallengeRequest.getNewPassword(),
@@ -72,7 +74,7 @@ public class CognitoUserUtils {
 		return awsCognitoIdentityProvider.adminRespondToAuthChallenge(adminRespondToAuthChallengeRequest);
 	}
 
-	public static List<AttributeType> getAttributeMap(CognitoSignupUser cognitoSignupUser) {
+	private static List<AttributeType> getAttributeMap(CognitoSignupUser cognitoSignupUser) {
 		Class<?> cognitoUserClass = cognitoSignupUser.getClass();
 
 		var fields = cognitoUserClass.getDeclaredFields();
@@ -90,7 +92,7 @@ public class CognitoUserUtils {
 		}).collect(Collectors.toList());
 	}
 
-	public static Object getFieldValue(java.lang.reflect.Field field, CognitoSignupUser cognitoSignupUser) {
+	private static Object getFieldValue(java.lang.reflect.Field field, CognitoSignupUser cognitoSignupUser) {
 		Object cognitoFieldValue = null;
 
 		try {

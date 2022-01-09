@@ -4,16 +4,12 @@ import com.expensetracker.trackerapp.entities.app.Expense;
 import com.expensetracker.trackerapp.entities.app.ExpenseStakeholders;
 import com.expensetracker.trackerapp.entities.app.Users;
 import com.expensetracker.trackerapp.entities.db.ExpenseTrackerBean;
-import com.expensetracker.trackerapp.entities.db.ExpenseTrackerBean.ExpenseTrackerBeanBuilder;
 import com.expensetracker.trackerapp.entities.db.ItemType;
 import com.expensetracker.trackerapp.request.CreateExpenseRequest;
-import java.util.Arrays;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.swing.ListSelectionModel;
-import org.springframework.lang.NonNull;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
 
 public class ExpenseBuilder {
@@ -35,7 +31,9 @@ public class ExpenseBuilder {
   public static Expense with(ExpenseTrackerBean expenseDetails) {
     var expense = new Expense();
     expense.setExpenseId(expenseDetails.getPk());
-    expense.setName(expenseDetails.getSk());
+    var expenseName = expenseDetails.getExpenseName() == null ? expenseDetails.getSk()
+        : expenseDetails.getExpenseName();
+    expense.setName(expenseName);
     expense.setGroupId(expenseDetails.getGroup());
     expense.setGroupName(expenseDetails.getGroupName());
     expense.setCost(expenseDetails.getCost());
@@ -71,14 +69,17 @@ public class ExpenseBuilder {
         .withSk(request.getName())
         .withCost(request.getCost()).withCreatedBy(request.getCreatedBy())
         .withPaidBy(request.getPaidBy())
+        .withCreatedDate(LocalDateTime.now())
         .withCategory(request.getCategory()).withGroup(request.getGroupId()).build();
 
     var expenseStakeholders = request.getStakeholders().getUsers().stream().map(s -> {
 
       var userExpense = new ExpenseTrackerBean.ExpenseTrackerBeanBuilder().withPk(expenseId)
           .withSk(s.getUserId())
+          .withExpenseName(request.getName())
           .withCost(request.getCost()).withCreatedBy(request.getCreatedBy())
           .withPaidBy(request.getPaidBy()).withOwes(s.getOwes())
+          .withCreatedDate(LocalDateTime.now())
           .withCategory(request.getCategory()).withGroup(request.getGroupId()).build();
 
       return userExpense;
